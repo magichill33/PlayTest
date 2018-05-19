@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.gntv.sdk"
         minSdkVersion 15
@@ -10,6 +10,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            // SDK SO
+            abiFilters 'armeabi‐v7a','armeabi'
+        }
     }
     buildTypes {
         release {
@@ -23,6 +27,19 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
+   /* repositories {
+        flatDir {
+            dirs project(':sdk_lib').file('libs')
+        }
+    }*/
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
 }
 
 dependencies {
@@ -33,7 +50,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile project(':sdk_lib')
-    //compile files('libs/VolSDK_V1.0.jar')
+    //compile project(':sdk_lib')
     compile files('libs/zxing.jar')
+    api(name:'pcdn', ext:'aar')
+    api(name:'sdk_lib-release', ext:'aar')
 }

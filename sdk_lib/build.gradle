@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         minSdkVersion 15
@@ -11,7 +11,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        ndk {
+            // SDK提供如下支持的 SO 库构架，您可以根据自己应用实际支持的情况来设置
+            abiFilters 'armeabi'
+        }
     }
     buildTypes {
         release {
@@ -24,6 +27,15 @@ android {
         main {
             jniLibs.srcDirs = ['libs']
         }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+    lintOptions{
+        abortOnError false
     }
 }
 
@@ -54,6 +66,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25+'
     testCompile 'junit:junit:4.12'
+    api(name:'pcdn', ext:'aar')
 }

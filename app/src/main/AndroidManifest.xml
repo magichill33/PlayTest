@@ -29,6 +29,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <service android:name="com.edge.pcdn.PcdnVodService"
+            android:process=":PcdnVodService"/>
+        <service android:name="com.edge.pcdn.PcdnLiveService"
+            android:process=":PcdnLiveService"/>
     </application>
 
 </manifest>

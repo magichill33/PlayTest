@@ -11,6 +11,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -220,10 +221,10 @@ public class MainActivity extends Activity implements OnClickListener{
                 exit();
                 break;
             case R.id.btn_url1:
-                doPrepare("qcctv1");
+                doPrepare("alicctv13");
                 break;
             case R.id.btn_url2:
-                doPrepare("qbeijing");
+                doPrepare("alicctv13");
                 break;
             case R.id.btn_sure:
                 exit();
@@ -387,31 +388,25 @@ public class MainActivity extends Activity implements OnClickListener{
         if(isInit){
             bufferDialog.show();
             //cancelTask();
-           /* new Thread(new Runnable() {
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    PlayModel playModel = VolManager.getInstance().getPlayUrl(cid);
-                    LogUtil.e("MainActivity--->onPostExecute--->PlayModel::" + playModel);
+                    String  playUrl = VolManager.getInstance().getPlayUrl(cid);
+                    LogUtil.e("MainActivity--->onPostExecute--->playUrl::" + playUrl);
 
                     Message msg = handler.obtainMessage();
-                    if (playModel.getStatus() == 0){
-                        msg.what = TIMER_PLAY;
+                    msg.what = TIMER_PLAY;
 
-                    }else if (playModel.getStatus() == 1){
-                        msg.what = TIMER_PAY;
-                    }else {
-                        msg.what = TIMER_ERROR;
-                    }
-                    msg.obj = playModel.getPlayUrl();
+                    msg.obj = playUrl;
                     handler.sendMessage(msg);
                     //startTask();
                 }
-            }).start();*/
-            String playUrl = VolManager.getInstance().getPlayUrl(cid);
+            }).start();
+           // String playUrl = VolManager.getInstance().getPlayUrl(cid);
            // String playUrl = "http://cdn.voole.com:3580/uid$190952191/stamp$1506418298/keyid$67141632/auth$d6e9318e951ee52c577e61a246dc52e6/f3c6e280c8f6becda0fecd0cc55b5612.m3u8?ext=v:1.4,btime:0,etime:0;admt:0,lg:246e4227_874550040:pln:0:mid:1904643:amid:0;oid:100817,f:1,p:0,code:12614,eid:100895,m:1904643,aid:-1&bke=cdnbk.voole.com&type=get_m3u8&host=cdn.voole.com:3580&port=3528&is3d=0&proto=5&isp2p=0&hid=001a34ac5735";
            // String playUrl = "http://cdn.voole.com:3580/uid$190952191/stamp$1506420448/keyid$67141632/auth$cb661eac857305d0d411db0839bae27d/c142948cb6e5f9280fdbfd7048611861.m3u8?ext=v:1.4,btime:0,etime:0;admt:0,lg:246e4227_1819104040:pln:0:mid:92074277:amid:0;oid:100817,f:1,p:0,code:37074,eid:100895,m:92074277,aid:-1&bke=cdnbk.voole.com&type=get_m3u8&host=cdn.voole.com:3580&port=3528&is3d=0&proto=5&isp2p=0&hid=001a34ac5735";
-            volMediaPlayer.reset();
-            volMediaPlayer.prepareTrdUrl(playUrl);
+           // volMediaPlayer.reset();
+           // volMediaPlayer.prepareTrdUrl(playUrl);
 
         }else{
             isStart = false;
@@ -473,7 +468,7 @@ public class MainActivity extends Activity implements OnClickListener{
                     break;
                 case TIMER_ERROR:
                     bufferDialog.dismiss();
-                    Toast.makeText(getApplicationContext(),"未知错误，请进行重试",Toast.LENGTH_LONG);
+                    Toast.makeText(getApplicationContext(),"未知错误，请进行重试",Toast.LENGTH_LONG).show();
                     break;
                 case TIMER_REPEAT:
                     LogUtil.i("TIMER_REPEAT");
@@ -501,7 +496,7 @@ public class MainActivity extends Activity implements OnClickListener{
             @Override
             public void doRefresh(PurchaseView view) {
                 view.hide();
-                doPrepare("qcctv1");
+                doPrepare("alicctv13");
             }
         });
         rootView.addView(purchaseView);

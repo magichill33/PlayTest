@@ -56,6 +56,7 @@ public class Config {
 		String isScan = propertiesUtil.getProperty("isScan", "false");
 		setScan(Boolean.parseBoolean(isScan));
 		setChannelType(propertiesUtil.getProperty("channelType", "xml"));
+		setOemid(propertiesUtil.getProperty("oemid",""));
 	}
 
 	private String oemType = null;
@@ -77,6 +78,7 @@ public class Config {
 	private String bootStartP2P = null;
 	private boolean isScan = false; //终端上报时是否进行扫描
 	private String channelType = "xml"; //片单类型 xml或者json
+	private String oemid = null;
 
 	public String getCloseLog() {
 		return closeLog;
@@ -229,5 +231,12 @@ public class Config {
 	public void setChannelType(String channelType) {
 		this.channelType = channelType;
 	}
-	
+
+	public String getOemid() {
+		return oemid;
+	}
+
+	public void setOemid(String oemid) {
+		this.oemid = oemid;
+	}
 }

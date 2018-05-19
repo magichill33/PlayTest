@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.edge.pcdn.PcdnManager;
+import com.edge.pcdn.PcdnType;
+import com.gntv.tv.HbGlibTool;
 import com.vol.sdk.model.PlayModel;
 import com.vol.sdk.model.Product;
 import com.vol.sdk.model.ProductModel;
@@ -41,6 +44,9 @@ public class VolManager {
     public void initSDK(Context context, final VolInitCallBack callBack){
         LogUtil.d("VolManager--->initSDK");
         Config.GetInstance().init(context);
+        String token = HbGlibTool.getToken();
+        PcdnManager.start(context, PcdnType.LIVE,token,null,Config.GetInstance().getOemid(),null);
+
         initLevel();
         initLog();
         AuthManager.GetInstance().init(new ConfigAuth(), context, true, "2.0");
@@ -65,6 +71,7 @@ public class VolManager {
 
     public void release(){
         LogUtil.d("VolManager--->release");
+        PcdnManager.stop(PcdnType.LIVE);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -129,52 +136,23 @@ public class VolManager {
         String resourceId = cid;
         String mpb = "";
         String jumpPlay = null;
-        String url = AuthManager.GetInstance().formatAuthPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
+        /*String url = AuthManager.GetInstance().formatAuthPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
                 coderate, mediumtype, epgid, cpid, cdnType, adversion, storeType, adurl, playUrlVersion,
                 authInterfaceVersion, is3rd, tracker, bkeUrl, dataType, proto, resourceId, mpb, appid,
                 jumpPlay);
        // playModel.setStatus(0);
         url = url + "&time=60";
-        String playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play?url='" + url + "'&urltype=1";
+        String playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play?url='" + url + "'&urltype=1";*/
         //playModel.setPlayUrl(playUrl);
-       /* Ad ad = AuthManager.GetInstance().getPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
+        Ad ad = AuthManager.GetInstance().getPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
                 coderate, mediumtype, epgid, cpid, cdnType, adversion, storeType, adurl, playUrlVersion,
                 authInterfaceVersion, is3rd, tracker, bkeUrl, dataType, proto, resourceId, mpb, appid,
                 jumpPlay);
-        if (ad!=null&&("0".equals(ad.getStatus()) || !TextUtils.isEmpty(ad.getPlayUrl()))){
-            playModel.setStatus(0);
-            String  url = ad.getPlayUrl() + "&time=60";
-            String playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play?url='" + url + "'&urltype=1";
-            playModel.setPlayUrl(playUrl);
-        }else {
-            User user = AuthManager.GetInstance().getUser();
-            String uid = user.getUid();
-            String hid = user.getHid();
-            String oemid = user.getOemid();
-            String ip = DeviceUtil.getLocalIpAddress();
-            String url = AuthManager.GetInstance().getAuthServer()
-                    + "/query?reqinfo=<req><data>{\"action\":\"livequery\",\"version\":\"1.0\"}</data></req>" + "&uid=" + uid +"&hid=" + hid + "&oemid=" + oemid + "&ip=" + ip;
-            LogUtil.e("PlayerView--->doPlayQuery--->url"+url);
-            ProductParser parser = new ProductParser();
-            Product product = null;
-            try {
-                parser.setUrl(url);
-                product = parser.getProduct();
-            } catch (Exception e) {
-                LogUtil.e("PlayerView--->doPlayQuery--->"+e.toString());
-            }
-            LogUtil.i("PlayerView--->doPlayQuery--->"+product);
-
-            if(product!=null&&"0".equalsIgnoreCase(product.getIsorder())){
-                String text = getMobileOrderUrl(product.getPortalid(),product.getSpid(),
-                        product.getFee(), product.getName(), product.getPid(), product.getPtype(),product.getStarttime(),product.getStoptime());
-                playModel.setStatus(1);
-                playModel.setPlayUrl(text);
-            }else {
-                playModel.setStatus(2);
-                playModel.setPlayUrl("服务器异常请重试");
-            }
-        }*/
+        String url = ad.getPlayUrl();
+        if (TextUtils.isEmpty(url)){
+            url = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play";
+        }
+        String playUrl = PcdnManager.PCDNAddress(PcdnType.LIVE,url);
         return playUrl;
     }
 

@@ -25,7 +25,7 @@ public abstract class StandardProxy implements IProxy {
 
 	public abstract String v_getProxyRtConfFileName();
 
-	private int mPort = 5656;
+	private int mPort = 35656;
 
 	//private boolean mHasStartP2p = false;
 
