@@ -148,7 +148,7 @@ public class VolManager {
                 coderate, mediumtype, epgid, cpid, cdnType, adversion, storeType, adurl, playUrlVersion,
                 authInterfaceVersion, is3rd, tracker, bkeUrl, dataType, proto, resourceId, mpb, appid,
                 jumpPlay);
-        String url = ad.getPlayUrl();
+        String url = ad!=null?ad.getPlayUrl():null;
         if (TextUtils.isEmpty(url)){
             url = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play";
         }
@@ -176,16 +176,22 @@ public class VolManager {
         }
         LogUtil.i("PlayerView--->doPlayQuery--->"+product);
 
+
+        String text = getMobileOrderUrl(product.getPortalid(),product.getSpid(),
+                product.getFee(), product.getName(), product.getPid(), product.getPtype(),product.getStarttime(),product.getStoptime());
         if(product!=null&&"0".equalsIgnoreCase(product.getIsorder())){
-            String text = getMobileOrderUrl(product.getPortalid(),product.getSpid(),
-                    product.getFee(), product.getName(), product.getPid(), product.getPtype(),product.getStarttime(),product.getStoptime());
+            /*String text = getMobileOrderUrl(product.getPortalid(),product.getSpid(),
+                    product.getFee(), product.getName(), product.getPid(), product.getPtype(),product.getStarttime(),product.getStoptime());*/
             productModel.setStatus(0);
-            productModel.setPayUrl(text);
+           // productModel.setPayUrl(text);
             productModel.setDesc("没有订购此产品，请根据payurl生成二维码扫码订购");
         }else {
             productModel.setStatus(1);
             productModel.setDesc("已订购此产品，请换台重试");
         }
+        productModel.setPayUrl(text);
+        productModel.setStartTime(product!=null?product.getStarttime():"0");
+        productModel.setEndTime(product!=null?product.getStoptime():"0");
         return productModel;
     }
 
