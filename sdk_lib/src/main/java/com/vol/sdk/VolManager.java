@@ -1,13 +1,8 @@
 package com.vol.sdk;
 
 import android.content.Context;
-import android.os.Message;
-import android.text.TextUtils;
 
-import com.edge.pcdn.PcdnManager;
-import com.edge.pcdn.PcdnType;
 import com.gntv.tv.HbGlibTool;
-import com.vol.sdk.model.PlayModel;
 import com.vol.sdk.model.Product;
 import com.vol.sdk.model.ProductModel;
 import com.vol.sdk.model.ProductParser;
@@ -45,7 +40,7 @@ public class VolManager {
         LogUtil.d("VolManager--->initSDK");
         Config.GetInstance().init(context);
         String token = HbGlibTool.getToken();
-        PcdnManager.start(context, PcdnType.LIVE,token,null,Config.GetInstance().getOemid(),null);
+       // PcdnManager.start(context, PcdnType.LIVE,token,null,Config.GetInstance().getOemid(),null);
 
         initLevel();
         initLog();
@@ -71,7 +66,7 @@ public class VolManager {
 
     public void release(){
         LogUtil.d("VolManager--->release");
-        PcdnManager.stop(PcdnType.LIVE);
+       // PcdnManager.stop(PcdnType.LIVE);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -136,15 +131,15 @@ public class VolManager {
         String resourceId = cid;
         String mpb = "";
         String jumpPlay = null;
-        /*String url = AuthManager.GetInstance().formatAuthPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
+        String url = AuthManager.GetInstance().formatAuthPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
                 coderate, mediumtype, epgid, cpid, cdnType, adversion, storeType, adurl, playUrlVersion,
                 authInterfaceVersion, is3rd, tracker, bkeUrl, dataType, proto, resourceId, mpb, appid,
                 jumpPlay);
        // playModel.setStatus(0);
         url = url + "&time=60";
-        String playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play?url='" + url + "'&urltype=1";*/
+        String playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play?url='" + url + "'&urltype=1";
         //playModel.setPlayUrl(playUrl);
-        Ad ad = AuthManager.GetInstance().getPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
+        /*Ad ad = AuthManager.GetInstance().getPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
                 coderate, mediumtype, epgid, cpid, cdnType, adversion, storeType, adurl, playUrlVersion,
                 authInterfaceVersion, is3rd, tracker, bkeUrl, dataType, proto, resourceId, mpb, appid,
                 jumpPlay);
@@ -152,7 +147,7 @@ public class VolManager {
         if (TextUtils.isEmpty(url)){
             url = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play";
         }
-        String playUrl = PcdnManager.PCDNAddress(PcdnType.LIVE,url);
+        String playUrl = PcdnManager.PCDNAddress(PcdnType.LIVE,url);*/
         return playUrl;
     }
 

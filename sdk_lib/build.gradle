@@ -68,5 +68,5 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25+'
     testCompile 'junit:junit:4.12'
-    api(name:'pcdn', ext:'aar')
+    //api(name:'pcdn', ext:'aar')
 }
