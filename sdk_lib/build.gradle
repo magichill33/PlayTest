@@ -13,7 +13,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // SDK提供如下支持的 SO 库构架，您可以根据自己应用实际支持的情况来设置
-            abiFilters 'armeabi'
+            abiFilters 'armeabi','armeabi‐v7a'
         }
     }
     buildTypes {
@@ -68,5 +68,5 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25+'
     testCompile 'junit:junit:4.12'
-    //api(name:'pcdn', ext:'aar')
+    api(name:'pcdn-sdk', ext:'aar')
 }
