@@ -52,6 +52,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //compile project(':sdk_lib')
     compile files('libs/zxing.jar')
-    api(name:'pcdn', ext:'aar')
+    api(name:'pcdn-sdk', ext:'aar')
     api(name:'sdk_lib-release', ext:'aar')
 }

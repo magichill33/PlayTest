@@ -31,10 +31,10 @@
         </activity>
 
 
-        <service android:name="com.edge.pcdn.PcdnVodService"
+       <!-- <service android:name="com.edge.pcdn.PcdnVodService"
             android:process=":PcdnVodService"/>
         <service android:name="com.edge.pcdn.PcdnLiveService"
-            android:process=":PcdnLiveService"/>
+            android:process=":PcdnLiveService"/>-->
     </application>
 
 </manifest>
