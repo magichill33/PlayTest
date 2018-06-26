@@ -1,6 +1,9 @@
 package com.vol.sdk;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.text.TextUtils;
 
 import com.edge.pcdn.PcdnManager;
@@ -12,6 +15,7 @@ import com.vol.sdk.model.ProductParser;
 import com.vol.sdk.utils.DateUtil;
 import com.vol.sdk.utils.DeviceUtil;
 import com.vol.sdk.utils.LogUtil;
+import com.vol.sdk.utils.NetUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -20,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.LogRecord;
 
 /**
  * Created by Administrator on 2017-9-19.
@@ -29,6 +34,11 @@ public class VolManager {
     private String appid = "-1";
     private static final String LIVE_PLAY_URL_VERSION = "2.0";
     private static final String LIVE_AUTH_INTERFACE_VERSION = "3.0";
+
+    private final int UPDATE_URL = 10001;
+    private static Handler mhandler = null;
+    private HandlerThread handlerThread = null;
+    private long delayTime = 60*1000*10;
 
     private static VolManager instance = new VolManager();
 
@@ -44,7 +54,7 @@ public class VolManager {
         Config.GetInstance().init(context);
         String token = HbGlibTool.getToken();
         PcdnManager.start(context, PcdnType.LIVE,token,null,Config.GetInstance().getOemid(),null);
-
+        delayTime = Long.parseLong(Config.GetInstance().getDelayTime())*1000;
         initLevel();
         initLog();
         AuthManager.GetInstance().init(new ConfigAuth(), context, true, "2.0");
@@ -64,7 +74,34 @@ public class VolManager {
                 }
             }
         }).start();
+        handlerThread = new HandlerThread("hbsdk");
+        handlerThread.start();
+        mhandler = new Handler(handlerThread.getLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case UPDATE_URL:
+                        LogUtil.d("VolManager--->UPDATE_URL");
+                        if (msg.obj!=null){
+                            String cid = (String) msg.obj;
+                            updatePlayurl(cid);
+                            notifyUpdatePlayUrl(cid);
+                        }
+                        break;
+                }
+            }
+        };
+    }
 
+    private void notifyUpdatePlayUrl(String cid){
+        LogUtil.d("VolManager--->notifyUpdatePlayUrl::"+cid);
+        if (mhandler!=null){
+            mhandler.removeCallbacksAndMessages(null);
+            Message msg = Message.obtain();
+            msg.obj = cid;
+            msg.what = UPDATE_URL;
+            mhandler.sendMessageDelayed(msg,delayTime);
+        }
     }
 
     public void release(){
@@ -84,6 +121,14 @@ public class VolManager {
                 }
             }
         }).start();
+        if (mhandler!=null){
+            mhandler.removeCallbacksAndMessages(null);
+            mhandler = null;
+        }
+        if (handlerThread!=null){
+            handlerThread.quit();
+            handlerThread = null;
+        }
     }
 
     public interface VolInitCallBack {
@@ -142,6 +187,7 @@ public class VolManager {
         url = url + "&time=60";
         String playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play?url='" + url + "'&urltype=1";*/
         //playModel.setPlayUrl(playUrl);
+        notifyUpdatePlayUrl(cid);
         Ad ad = AuthManager.GetInstance().getPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
                 coderate, mediumtype, epgid, cpid, cdnType, adversion, storeType, adurl, playUrlVersion,
                 authInterfaceVersion, is3rd, tracker, bkeUrl, dataType, proto, resourceId, mpb, appid,
@@ -151,7 +197,59 @@ public class VolManager {
             url = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play";
         }
         String playUrl = PcdnManager.PCDNAddress(PcdnType.LIVE,url);
+        playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play?url='" + playUrl + "'&urltype=2";
         return playUrl;
+    }
+
+    private void updatePlayurl(String cid){
+        LogUtil.d("VolManager--->updatePlayurl--->cid:"+cid);
+        //PlayModel playModel = new PlayModel();
+        String mid = "1";
+        String sid = "1";
+        String fid = "";
+        try {
+            fid = URLEncoder.encode(1 + "_" + cid, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            LogUtil.e("VolManager--->updatePlayurl--->"+e);
+        }
+        String pid = "1";
+        String ptype = "1000";
+        String downUrl = null;
+        String mtype = null;
+        String adCache = null;
+        String ispid = null;
+        String coderate = null;
+        String mediumtype = null;
+        String epgid = null;
+        String cpid = null;
+        String cdnType = null;
+        String adversion = "";
+        String storeType = null;
+        String adurl = null;
+        String playUrlVersion = LIVE_PLAY_URL_VERSION;
+        String authInterfaceVersion = LIVE_AUTH_INTERFACE_VERSION;
+        String is3rd = "1";
+        String tracker = "1";
+        String bkeUrl = "";
+        String dataType = "0";
+        String proto = "0";
+        String resourceId = cid;
+        String mpb = "";
+        String jumpPlay = null;
+
+        Ad ad = AuthManager.GetInstance().getPlayUrl(mid, sid, fid, pid, ptype, downUrl, mtype, adCache, ispid,
+                coderate, mediumtype, epgid, cpid, cdnType, adversion, storeType, adurl, playUrlVersion,
+                authInterfaceVersion, is3rd, tracker, bkeUrl, dataType, proto, resourceId, mpb, appid,
+                jumpPlay);
+        String url = ad!=null?ad.getPlayUrl():null;
+        if (TextUtils.isEmpty(url)){
+            url = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play";
+        }
+        String playUrl = PcdnManager.PCDNAddress(PcdnType.LIVE,url);
+        playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/update?url='" + playUrl + "'&urltype=2";
+        boolean result = NetUtil.doGet(playUrl, 2, 5, 10);
+        LogUtil.d("VolManager--->updatePlayurl--->通知结果 result:"+result);
     }
 
     public ProductModel doProductQuery(){

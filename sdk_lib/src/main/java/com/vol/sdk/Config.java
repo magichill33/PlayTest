@@ -57,6 +57,7 @@ public class Config {
 		setScan(Boolean.parseBoolean(isScan));
 		setChannelType(propertiesUtil.getProperty("channelType", "xml"));
 		setOemid(propertiesUtil.getProperty("oemid",""));
+		setDelayTime(propertiesUtil.getProperty("delayTime","600"));
 	}
 
 	private String oemType = null;
@@ -79,6 +80,7 @@ public class Config {
 	private boolean isScan = false; //终端上报时是否进行扫描
 	private String channelType = "xml"; //片单类型 xml或者json
 	private String oemid = null;
+	private String delayTime = "600";
 
 	public String getCloseLog() {
 		return closeLog;
@@ -238,5 +240,13 @@ public class Config {
 
 	public void setOemid(String oemid) {
 		this.oemid = oemid;
+	}
+
+	public String getDelayTime() {
+		return delayTime;
+	}
+
+	public void setDelayTime(String delayTime) {
+		this.delayTime = delayTime;
 	}
 }
