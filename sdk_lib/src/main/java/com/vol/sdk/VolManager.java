@@ -174,9 +174,13 @@ public class VolManager {
         }
         LogUtil.i("PlayerView--->doPlayQuery--->"+product);
 
-
-        String text = getMobileOrderUrl(product.getPortalid(),product.getSpid(),
-                product.getFee(), product.getName(), product.getPid(), product.getPtype(),product.getStarttime(),product.getStoptime());
+        String text = "";
+        if (product!=null){
+            text = getMobileOrderUrl(product.getPortalid(),product.getSpid(),
+                    product.getFee(), product.getName(), product.getPid(), product.getPtype(),product.getStarttime(),product.getStoptime());
+        }
+        /*String text = getMobileOrderUrl(product.getPortalid(),product.getSpid(),
+                product.getFee(), product.getName(), product.getPid(), product.getPtype(),product.getStarttime(),product.getStoptime());*/
         if(product!=null&&"0".equalsIgnoreCase(product.getIsorder())){
             /*String text = getMobileOrderUrl(product.getPortalid(),product.getSpid(),
                     product.getFee(), product.getName(), product.getPid(), product.getPtype(),product.getStarttime(),product.getStoptime());*/
