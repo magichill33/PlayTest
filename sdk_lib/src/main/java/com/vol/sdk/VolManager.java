@@ -243,13 +243,15 @@ public class VolManager {
                 authInterfaceVersion, is3rd, tracker, bkeUrl, dataType, proto, resourceId, mpb, appid,
                 jumpPlay);
         String url = ad!=null?ad.getPlayUrl():null;
-        if (TextUtils.isEmpty(url)){
-            url = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/play";
+        if (!TextUtils.isEmpty(url)){
+            String playUrl = PcdnManager.PCDNAddress(PcdnType.LIVE,url);
+            playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/update?url='" + playUrl + "'&urltype=2";
+            boolean result = NetUtil.doGet(playUrl, 2, 5, 10);
+            LogUtil.d("VolManager--->updatePlayurl--->通知结果 result:"+result);
+        }else {
+            LogUtil.d("VolManager--->updatePlayurl--->鉴权失败不进行通知");
         }
-        String playUrl = PcdnManager.PCDNAddress(PcdnType.LIVE,url);
-        playUrl = "http://127.0.0.1:" + ProxyManager.GetInstance().getProxyPort() + "/update?url='" + playUrl + "'&urltype=2";
-        boolean result = NetUtil.doGet(playUrl, 2, 5, 10);
-        LogUtil.d("VolManager--->updatePlayurl--->通知结果 result:"+result);
+
     }
 
     public ProductModel doProductQuery(){
