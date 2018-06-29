@@ -221,10 +221,10 @@ public class MainActivity extends Activity implements OnClickListener{
                 exit();
                 break;
             case R.id.btn_url1:
-                doPrepare("alicctv13");
+                doPrepare("alicctv1");
                 break;
             case R.id.btn_url2:
-                doPrepare("alicctv13");
+                doPrepare("alicctv3");
                 break;
             case R.id.btn_sure:
                 exit();
